@@ -7,13 +7,21 @@ import androidx.lifecycle.viewModelScope
 import com.maan.expert.model.CargoBox
 import com.maan.expert.model.Category
 import com.maan.expert.model.Product
+import com.maan.expert.widget.ContentBin
+import com.maan.expert.widget.UiState
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.lang.Exception
 
 class HomeViewModel : ViewModel() {
 
     private val _lstOfCargos=MutableLiveData<List<CargoBox>>()
     fun getCargos():LiveData<List<CargoBox>> =_lstOfCargos
+
+    private val _uiState=MutableLiveData<UiState<CargoBox>>()
+    fun uiState():LiveData<UiState<CargoBox>> =_uiState
+
+    var counter=0  // test --> Error layout
 
     private suspend fun fetchCategories()=flow {
             val lstOfCategory = mutableListOf<Category>()
@@ -28,6 +36,9 @@ class HomeViewModel : ViewModel() {
             lstOfCategory.add(Category(9,"Ikhone","The description is"))
             lstOfCategory.add(Category(10,"Jumgle","The description is"))
             delay(3000)
+
+           if(counter++ == 0)throw Exception("Something went wrong") // test --> Error layout
+
             emit(lstOfCategory)
     }
 
@@ -52,13 +63,18 @@ class HomeViewModel : ViewModel() {
 
 
     fun fetchCargo() {
+
         viewModelScope.launch {
             fetchCategories().zip(fetchProducts()){ lstOfCategory,lstOfProduct ->
                 val lstOfMappedCategory =CargoBox.CategoryBox.create("Categories",lstOfCategory)
                 val lstOfMappedProduct=CargoBox.ProductBox.create(lstOfProduct)
                 CargoBox.merge(lstOfMappedCategory,lstOfMappedProduct)
+            }.onStart {
+               _uiState.value=UiState.Progress
+            }.catch {
+                _uiState.value=UiState.Error("Something went wrong",action = true)
             }.collect {
-                _lstOfCargos.value=it
+                _uiState.value=UiState.Content(ContentBin(it))
             }
         }
     }

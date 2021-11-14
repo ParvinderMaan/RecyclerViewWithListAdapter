@@ -8,10 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.maan.expert.databinding.FragmentHomeBinding
 import com.maan.expert.model.CargoBox
-import com.maan.expert.model.Product
+import com.maan.expert.widget.UiState
 import java.util.*
 
 class HomeFragment : Fragment() {
@@ -41,9 +40,14 @@ class HomeFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
         viewModel.fetchCargo()
 
-        viewModel.getCargos().observe(viewLifecycleOwner,{ lstOfCargo: List<CargoBox> ->
-            cargoAdapter.submitList(lstOfCargo)
+//        viewModel.getCargos().observe(viewLifecycleOwner,{ lstOfCargo: List<CargoBox> ->
+//            cargoAdapter.submitList(lstOfCargo)
+//        })
+
+        viewModel.uiState().observe(viewLifecycleOwner,{
+            showState(it)
         })
+
         val layoutManager=GridLayoutManager(requireActivity(), 2)
         layoutManager.spanSizeLookup = object : SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
@@ -70,8 +74,27 @@ class HomeFragment : Fragment() {
             viewModel.updateRandomItem(pos)
         }
 
+
+        binder.uiStateView.errorActionCallback {
+            viewModel.fetchCargo()
+        }
+
     }
 
+    private fun showState(it: UiState<CargoBox>) {
+        when(it){
+            is UiState.Content -> {
+                binder.uiStateView.showContent()
+                cargoAdapter.submitList(it.content.items)
+            }
+            is UiState.Error -> {
+               binder.uiStateView.showError(it)
+            }
+            UiState.Progress -> {
+                binder.uiStateView.showProgress()
+            }
+        }
 
+    }
 
 }

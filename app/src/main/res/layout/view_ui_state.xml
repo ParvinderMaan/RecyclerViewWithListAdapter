@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
+
+
+   <!--    progress ui-->
+   <ProgressBar
+       android:id="@+id/progress_bar"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:visibility="visible"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent" />
+
+   <!--    error ui-->
+   <ImageView
+       android:id="@+id/image_view_error"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toTopOf="parent"
+       tools:srcCompat="@tools:sample/avatars" />
+
+   <TextView
+       android:id="@+id/text_view_error"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Error message"
+       android:layout_marginTop="20dp"
+       app:layout_constraintEnd_toEndOf="@+id/image_view_error"
+       app:layout_constraintStart_toStartOf="@+id/image_view_error"
+       app:layout_constraintTop_toBottomOf="@+id/image_view_error" />
+
+   <Button
+       android:id="@+id/button_error"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Try Again"
+       android:layout_marginTop="10dp"
+       app:layout_constraintEnd_toEndOf="@+id/image_view_error"
+       app:layout_constraintStart_toStartOf="@+id/image_view_error"
+       app:layout_constraintTop_toBottomOf="@+id/text_view_error" />
+
+   <androidx.constraintlayout.widget.Group
+       android:id="@+id/group_error"
+       android:visibility="visible"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       app:constraint_referenced_ids="image_view_error,text_view_error,button_error"/>
+
+   <!--    content ui-->
+   <!-- is in root view-->
+
+
+
+</merge>
